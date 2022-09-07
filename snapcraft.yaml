@@ -1,0 +1,40 @@
+name: parsec
+base: core22
+version: 1.0.0
+summary: Platform AbstRaction for SECurity service
+description: |
+  PARSEC is the Platform AbstRaction for SECurity, an open-source initiative to
+  provide a common API to hardware security and cryptographic services in a
+  platform-agnostic way. This abstraction layer keeps workloads decoupled from
+  physical platform details, enabling cloud-native delivery flows within the
+  data center and at the edge.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: strict
+
+apps:
+  parsec:
+    daemon: simple
+    command: bin/parsec
+
+parts:
+  parsec:
+    plugin: rust
+    source: https://github.com/parallaxsecond/parsec.git
+    source-tag: $SNAPCRAFT_PROJECT_VERSION
+    rust-features:
+      - mbed-crypto-provider
+      - direct-authenticator
+      # seems to fail to build due to being unable to find tss2-sys via
+      # pkg-config even though we have libtss2-dev in build-packages...
+      # - tpm-provider
+    build-packages:
+      - cmake
+      - cargo
+      - rustc
+      - llvm-dev
+      - libclang-dev
+      - clang
+      - protobuf-compiler
+      - libtss2-dev
+
